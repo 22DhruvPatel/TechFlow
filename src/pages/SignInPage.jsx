@@ -9,6 +9,19 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  async function handleGoogleSignIn() {
+    setMessage("");
+
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: window.location.origin,
+      },
+    });
+
+    if (error) setMessage(error.message);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setMessage("");
@@ -31,6 +44,16 @@ export default function SignInPage() {
           <h1>Sign in to TechFlow</h1>
           <p>Access your IT support workspace.</p>
         </div>
+
+        <button
+          type="button"
+          className="button button-secondary button-full"
+          onClick={handleGoogleSignIn}
+        >
+          Continue with Google
+        </button>
+
+        <div className="auth-divider" aria-hidden="true"><span>or</span></div>
 
         <form onSubmit={handleSubmit} className="form-stack">
           <label>

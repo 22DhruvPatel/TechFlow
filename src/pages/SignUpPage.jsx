@@ -5,7 +5,7 @@ import Logo from "../components/Logo";
 
 export default function SignUpPage() {
   const [form, setForm] = useState({
-    firstName: "", lastName: "", department: "", email: "", password: ""
+    firstName: "", lastName: "", department: "", email: "", password: "", confirmPassword: ""
   });
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -18,6 +18,12 @@ export default function SignUpPage() {
   async function handleSubmit(e) {
     e.preventDefault();
     setMessage("");
+
+    if (form.password !== form.confirmPassword) {
+      setMessage("Passwords do not match.");
+      return;
+    }
+
     setLoading(true);
 
     const { error } = await supabase.auth.signUp({
@@ -73,7 +79,19 @@ export default function SignUpPage() {
             <input type="password" required minLength={8} value={form.password} onChange={e => update("password", e.target.value)} placeholder="Create a strong password" />
           </label>
 
-          <p className="helper-text">Use at least 8 characters. We will strengthen the client-side validation to match the final capstone policy.</p>
+          <label>
+            Confirm password
+            <input
+              type="password"
+              required
+              autoComplete="new-password"
+              value={form.confirmPassword}
+              onChange={e => update("confirmPassword", e.target.value)}
+              placeholder="Re-enter your password"
+            />
+          </label>
+
+          <p className="helper-text">Use at least 8 characters and enter the same password in both fields.</p>
 
           {message && <div className="form-message" role="status">{message}</div>}
 
